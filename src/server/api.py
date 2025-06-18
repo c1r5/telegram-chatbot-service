@@ -12,3 +12,6 @@ async def upload_file(file: UploadFile = File(...)):
     buffer = BytesIO(contents)
     await send_file(buffer, file.filename)
     
+@fastapi.get("/health")
+async def health_check():
+    return {"status": "ok"}
