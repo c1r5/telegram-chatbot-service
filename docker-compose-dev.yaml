@@ -1,0 +1,9 @@
+services:
+  chatbot:
+    container_name: chatbot
+    image: telegram-chatbot-service
+    env_file:
+      - ./.env
+    ports:
+      - 8000:8000
+    
