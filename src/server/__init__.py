@@ -1,5 +1,5 @@
-from .api import fastapi
+from .api import app_instance
 
 __all__ = [
-    "fastapi"
+    "app_instance"
 ]
