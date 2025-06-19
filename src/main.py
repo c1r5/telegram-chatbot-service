@@ -1,15 +1,25 @@
 import asyncio
 import logging
 import signal
-import sys
+from typing import Literal, cast
 from uvicorn import Config, Server
 
 from dotenv import load_dotenv
 
 from bot import run_telegram_bot
 from server import fastapi
+from helpers import getenv
 
 load_dotenv()
+
+EnvironmentMode = Literal["dev", "prod"]
+
+env_value = getenv("ENVIRONMENT_MODE", "dev")  # default to 'dev' if not set
+
+if env_value not in ("dev", "prod"):
+    raise ValueError(f"Invalid ENVIRONMENT_MODE: {env_value}")
+
+ENVIRONMENT_MODE: EnvironmentMode = cast(EnvironmentMode, env_value)
 
 logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(levelname)s %(message)s", datefmt="%m/%d/%y - %H:%M:%S %Z")
 logger = logging.getLogger(__name__)

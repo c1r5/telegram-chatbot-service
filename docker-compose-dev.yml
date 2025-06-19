@@ -1,9 +1,16 @@
 services:
   chatbot:
+    build: .
     container_name: chatbot
     image: telegram-chatbot-service
     env_file:
       - ./.env
     ports:
       - 8000:8000
+    volumes:
+      - .:/app
+    # develop:
+    #   watch:
+    #     - path: .
+    #       action: rebuild
     
