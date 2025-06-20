@@ -1,0 +1,8 @@
+services:
+  chatbot:
+    volumes:
+      - ./data:/app/data
+    develop:
+      watch:
+        - action: rebuild
+          path: ./src

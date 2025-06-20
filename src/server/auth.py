@@ -1,10 +1,31 @@
-from fastapi.security import APIKeyHeader
-from fastapi import HTTPException, Depends
+import json
+import logging
 
-API_KEY_NAME = "X-API-Key"
-API_KEY_HEADER = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+from fastapi import Request
+from fastapi.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 
-async def validate_api_key(api_key_header: str = Depends(API_KEY_HEADER)):
-    if api_key_header == "84a31499-0294-4706-aca0-e707d1e91f7c":
-        return api_key_header
-    raise HTTPException(status_code=403, detail="Chave inválida")
+logger = logging.getLogger(__name__)
+
+
+class APIKeyMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app, header_name="X-API-Key"):
+        super().__init__(app)
+        self.header_name = header_name
+
+    async def dispatch(self, request: Request, call_next):
+        public_paths = ["/health", "/docs", "/openapi.json"]
+        if request.url.path in public_paths:
+            return await call_next(request)
+        api_key = request.headers.get(self.header_name)
+        with open("data/authorized_keys.json", "r+") as f:
+            authorized_keys = json.load(f)
+        # Validação da chave
+        if not api_key or api_key not in authorized_keys.keys():
+            return JSONResponse(
+                status_code=403, content={"detail": "API Key inválida ou ausente"}
+            )
+
+        request.state.key_info = authorized_keys[api_key]
+
+        return await call_next(request)
