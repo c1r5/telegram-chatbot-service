@@ -21,12 +21,18 @@ if env_value not in ("dev", "prod"):
 
 ENVIRONMENT_MODE: EnvironmentMode = cast(EnvironmentMode, env_value)
 
-logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(levelname)s %(message)s", datefmt="%m/%d/%y - %H:%M:%S %Z")
+logging.basicConfig(
+    level=logging.INFO,
+    format="(%(asctime)s) %(levelname)s %(message)s",
+    datefmt="%m/%d/%y - %H:%M:%S %Z",
+)
 logger = logging.getLogger(__name__)
+
 
 # Function to run FastAPI server
 async def run_fastapi():
-    config = Config(app=app_instance, host="0.0.0.0", port=8000, loop="asyncio")
+    config = Config(app=app_instance, host="0.0.0.0",
+                    port=8000, loop="asyncio")
     server = Server(config)
     await server.serve()
 
@@ -56,8 +62,10 @@ async def main():
     except asyncio.CancelledError:
         print("Tarefas canceladas com sucesso.")
 
+
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         print("Encerrado pelo usuário.")
+
