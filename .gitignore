@@ -5,8 +5,7 @@ build/
 dist/
 wheels/
 *.egg-info
-
-# Virtual environments
+data/
+logs/
 .venv
 .env
-authorized_keys.json

@@ -27,6 +27,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="(%(asctime)s) %(levelname)s %(message)s",
     datefmt="%m/%d/%y - %H:%M:%S %Z",
+    filename=f"logs/{ENVIRONMENT_MODE}.log",
 )
 logger = logging.getLogger(__name__)
 
