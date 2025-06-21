@@ -35,7 +35,13 @@ async def send_file(buffer: BytesIO, filename: str | None):
     except Exception as e:
         log.error("send_file_error", e)
         
-        
+async def send_message(text: str):
+    try:
+        await bot.send_message(chat_id=OWNER_USER_ID, text=text)
+    except Exception as e:
+        log.error("send_message_error", e)
+        raise e
+    
 @dp.message(Command("health"))
 async def health_check(message: Message):
     try:
