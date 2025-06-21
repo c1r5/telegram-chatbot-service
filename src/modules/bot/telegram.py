@@ -5,7 +5,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BufferedInputFile
 
-from helpers import getenv
+from modules.helpers import getenv
 import logging
 
 TELEGRAM_BOT_API_KEY = getenv("TELEGRAM_BOT_API_KEY")

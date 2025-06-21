@@ -6,9 +6,11 @@ from uvicorn import Config, Server
 
 from dotenv import load_dotenv
 
-from bot import run_telegram_bot
-from server import app_instance
-from helpers import getenv
+
+from modules.bot import run_telegram_bot
+from modules.helpers import getenv
+from modules.server import app_instance
+
 
 load_dotenv()
 

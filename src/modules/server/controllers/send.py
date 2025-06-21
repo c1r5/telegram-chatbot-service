@@ -1,13 +1,15 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, Request, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 from io import BytesIO
-from bot import send_file
 
-send_router = APIRouter(prefix="/send")
+from modules.bot import send_file
+from modules.server.rate_limiter import limiter
 
+send_route = APIRouter(prefix="/send")
 
-@send_router.post("/document")
-async def upload_file(file: UploadFile = File(...)):
+@send_route.post("/document")
+@limiter.limit("5/minute")
+async def upload_file(request: Request, file: UploadFile = File(...)):
     try:
         contents = await file.read()
         buffer = BytesIO(contents)
