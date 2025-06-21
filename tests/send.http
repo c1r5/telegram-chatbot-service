@@ -1,5 +1,5 @@
 ### Send Message
-POST {{API_URL}}/send/message
+POST {{BASE_URL}}/send/message
 Content-Type: application/json
 x-api-key: {{API_KEY}}
 
