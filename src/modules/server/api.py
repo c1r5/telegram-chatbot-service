@@ -1,11 +1,11 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import JSONResponse
 from slowapi.middleware import SlowAPIMiddleware
 
 from modules.server.rate_limiter import limiter
 from modules.server.middlewares.api_key_middleware import APIKeyMiddleware
 from modules.server.controllers.send import send_route
-
+from modules.bot import telegram_chat
 
 app_instance = FastAPI()
 
@@ -18,6 +18,27 @@ app_instance.include_router(send_route)
 async def auth_test():
     return {"mensagem": "Você está autenticado!"}
 
+@app_instance.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    async def on_message_listener(message: str):
+        try:
+            await websocket.send_text(message)
+        except Exception as e:
+            print(f"Error sending message: {e}")
+    
+    telegram_chat.add_on_message_listener(on_message_listener)
+    
+    await websocket.accept()
+    
+    while True:
+        if websocket.application_state == "DISCONNECTED":
+            break
+        
+        data = await websocket.receive_text()
+        
+        if data == "close":
+            await websocket.close()
+            break
 
 @app_instance.get("/health")
 @limiter.limit("10/minute")
