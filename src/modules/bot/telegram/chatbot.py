@@ -7,6 +7,7 @@ from aiogram.types import BufferedInputFile, Message
 from aiogram.filters import Command
 
 
+from modules.bot.models.chat_message import UserMessage
 from modules.helpers import getenv
 from modules.bot.telegram.chat import Chat
 
@@ -18,7 +19,7 @@ OWNER_USER_ID = getenv("OWNER_ID")
 dp = Dispatcher()
 bot = Bot(token=TELEGRAM_BOT_API_KEY, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 log = logging.getLogger(__name__)
-chat = Chat()
+chat = Chat(bot)
 
 async def run_telegram_bot():
     try:
@@ -55,8 +56,11 @@ async def health_check(message: Message):
 @dp.message()
 async def handle_message(message: Message):
     try:
-        log.info(f"Received message: {message.text}")
-        await chat.emit_message(message.text)
+        await chat.emit_message(UserMessage(
+            message_id=message.message_id,
+            chat_id=message.chat.id,
+            message=message.text
+        ))
     except Exception as e:
         log.error("handle_message_error", e)
         await message.answer("An error occurred while processing your message.")

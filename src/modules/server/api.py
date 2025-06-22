@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import JSONResponse
 from slowapi.middleware import SlowAPIMiddleware
 
+from modules.bot.models.chat_message import BotMessage, UserMessage
 from modules.server.rate_limiter import limiter
 from modules.server.middlewares.api_key_middleware import APIKeyMiddleware
 from modules.server.controllers.send import send_route
@@ -20,9 +21,9 @@ async def auth_test():
 
 @app_instance.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    async def on_message_listener(message: str):
+    async def on_message_listener(message: UserMessage):
         try:
-            await websocket.send_text(message)
+            await websocket.send_text(message.model_dump_json())
         except Exception as e:
             print(f"Error sending message: {e}")
     
@@ -39,6 +40,13 @@ async def websocket_endpoint(websocket: WebSocket):
         if data == "close":
             await websocket.close()
             break
+        
+        try:
+            bot_message = BotMessage.model_validate_json(data)
+            await telegram_chat.send_message(bot_message)
+        except Exception as e:
+            print(f"Error processing message: {e}")
+            await websocket.send_text(f"Error: {str(e)}")
 
 @app_instance.get("/health")
 @limiter.limit("10/minute")
