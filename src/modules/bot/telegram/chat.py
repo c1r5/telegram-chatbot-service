@@ -4,7 +4,8 @@ from typing import Any, Callable, Union
 
 from aiogram import Bot
 
-from modules.bot.models.chat_message import BotMessage, UserMessage
+from modules.bot.telegram.constants import OWNER_USER_ID
+from modules.bot.telegram.models.chat_message import BotMessage, UserMessage
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ class Chat:
     async def send_message(self, bot_message: BotMessage):
         try:
             await self.bot.send_message(
-                    chat_id=bot_message.chat_id,
+                    chat_id=OWNER_USER_ID,
                     text=bot_message.message,
                     reply_to_message_id=bot_message.reply_to_message_id if bot_message.reply_to_message_id else None,
                 )

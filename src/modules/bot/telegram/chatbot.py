@@ -7,14 +7,13 @@ from aiogram.types import BufferedInputFile, Message
 from aiogram.filters import Command
 
 
-from modules.bot.models.chat_message import UserMessage
+from modules.bot.telegram.constants import OWNER_USER_ID, TELEGRAM_BOT_API_KEY
+from modules.bot.telegram.models.chat_message import UserMessage
 from modules.helpers import getenv
 from modules.bot.telegram.chat import Chat
 
 import logging
 
-TELEGRAM_BOT_API_KEY = getenv("TELEGRAM_BOT_API_KEY")
-OWNER_USER_ID = getenv("OWNER_ID")
 
 dp = Dispatcher()
 bot = Bot(token=TELEGRAM_BOT_API_KEY, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -58,7 +57,7 @@ async def handle_message(message: Message):
     try:
         await chat.emit_message(UserMessage(
             message_id=message.message_id,
-            chat_id=message.chat.id,
+            # chat_id=message.chat.id,
             message=message.text
         ))
     except Exception as e:
