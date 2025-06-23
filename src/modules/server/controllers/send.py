@@ -18,7 +18,7 @@ async def upload(request: Request, file: UploadFile = File(...)):
         await send_file(buffer, file.filename)
         return JSONResponse(status_code=200, content={"status": "ok"})
     except Exception as e:
-        return HTTPException(500, e)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 class MessageBody(BaseModel):
@@ -28,11 +28,11 @@ class MessageBody(BaseModel):
 @limiter.limit("5/minute")
 async def message(request: Request, body: MessageBody) -> JSONResponse:
     try:
-        if not message:
+        if not body.message:
             raise HTTPException(status_code=400, detail="Message cannot be empty")
         
         await send_message(body.message)
         
         return JSONResponse(status_code=200, content={"status": "ok"})
     except Exception as e:
-        raise HTTPException(500, e)
+        raise HTTPException(status_code=500, detail=str(e))
