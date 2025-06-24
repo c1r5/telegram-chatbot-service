@@ -1,4 +1,4 @@
-# Telegram Chatbot Service
+# Chatbot Service
 
 A FastAPI application with an integrated Telegram bot. It exposes HTTP endpoints to send messages or documents to a predefined Telegram user and provides a WebSocket interface for real time chat forwarding.
 
@@ -62,3 +62,6 @@ The endpoint `/health` can be used for health checks and `/ws` provides a WebSoc
 ## Tests
 
 The repository currently contains a basic HTTP example in `tests/send.http`. Additional automated tests can be added using frameworks such as `pytest`.
+
+## Platforms
+- [X] Telegram
